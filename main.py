@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
 
 
 def input_map(x, y):
@@ -28,41 +27,46 @@ def toStatusList(map_list):
     for i in range(len(map_list)):  # y
         for j in range(len(map_list[i])):  # x
             if(map_list[i][j] == 1 or map_list[i][j] == "1"):
-                map_list[i][j] = "壁"  # 1を「wall」の「w」に変換
+                map_list[i][j] = "■"  # 1を壁の ■ に変換
             elif(map_list[i][j] == "0"):
-                map_list[i][j] = "空"  # ｓｔｒ"0"をintに変換
+                map_list[i][j] = "□"  # 0を空の □ に変換
     return map_list
 
 
 def set_scores(map_list, y, x, now_cost):
-    ans = 0
     is_set = False
-    if(map_list[y][x] == "空"):
+    cost_until_a_goal = 0
+    if(map_list[y][x] == "□"):
         map_list[y][x] = now_cost + 1
         is_set = True
     elif(map_list[y][x] == "g"):
-        ans = now_cost + 1
-        print(ans)
-        sys.exit()
-    return map_list, is_set
+        map_list[y][x] = now_cost + 1
+        cost_until_a_goal = now_cost + 1
+        is_set = True
+    return map_list, is_set, cost_until_a_goal
 
 
 def search_up_down_left_right(map_list, y, x):
     now_cost = map_list[y][x]
     is_set = False
     is_sets = [False, False, False, False]
+    cost_until_a_goal = 0
+    is_goals = [0, 0, 0, 0]
     # 上
-    map_list, is_sets[0] = set_scores(map_list, y-1, x, now_cost)
+    map_list, is_sets[0], is_goals[0] = set_scores(map_list, y-1, x, now_cost)
     # 下
-    map_list, is_sets[1] = set_scores(map_list, y+1, x, now_cost)
+    map_list, is_sets[1], is_goals[1] = set_scores(map_list, y+1, x, now_cost)
     # 右
-    map_list, is_sets[2] = set_scores(map_list, y, x+1, now_cost)
+    map_list, is_sets[2], is_goals[2] = set_scores(map_list, y, x+1, now_cost)
     # 左
-    map_list, is_sets[3] = set_scores(map_list, y, x-1, now_cost)
+    map_list, is_sets[3], is_goals[3] = set_scores(map_list, y, x-1, now_cost)
     if(True in is_sets):
         is_set = True   # is_setsが一つでもTrueならis_setはTrue
-    map_list[y][x] = "済"
-    return map_list, is_set
+    if(4 != is_goals.count(0)):
+        cost_until_a_goal = sum(is_goals)
+        #print("ゴール")
+    map_list[y][x] = "◯"
+    return map_list, is_set, cost_until_a_goal
 
 
 # def get_max(map_list):
@@ -73,7 +77,8 @@ def search_up_down_left_right(map_list, y, x):
 
 
 def get_distance_dijkstra(map_list):
-    now_count = 0
+    now_cost = 0
+    cost_until_a_goal = 0
     while(True):
         is_sets = False
         is_set = False
@@ -81,21 +86,26 @@ def get_distance_dijkstra(map_list):
             for j in range(len(map_list[i])):  # x行
                 if(map_list[i][j] == "s"):
                     map_list[i][j] = 0
-                    map_list, is_set = \
+                    map_list, is_set, cost_until_a_goal = \
                         search_up_down_left_right(map_list, i, j)
-                    # print("x:" + str(j) + " y:" + str(i)
-                    # + " is_set:" + str(is_set))
-                elif(map_list[i][j] == now_count):
-                    map_list, is_sets = \
+                    if(cost_until_a_goal != 0):
+                        return cost_until_a_goal
+                    print("x:" + str(j) + " y:" + str(i) + " is_set:" +
+                          str(is_set))
+                elif(map_list[i][j] == now_cost):
+                    map_list, is_sets, cost_until_a_goal = \
                         search_up_down_left_right(map_list, i, j)
+                    if(cost_until_a_goal != 0):
+                        return cost_until_a_goal
                     if(is_sets is True):
                         is_set = True
-                    # print("x:" + str(j) + " y:" + str(i)
-                    # + " is_set:" + str(is_set))
+                    print("x:" + str(j) + " y:" + str(i) + " is_set:" +
+                          str(is_sets))
         if(is_set is False):
-            print("Faile")
-            sys.exit()
-        now_count += 1
+            cost_until_a_goal = "Fail"
+            break
+        now_cost += 1
+    return cost_until_a_goal
 
 
 def map_show(map_list):
@@ -103,6 +113,7 @@ def map_show(map_list):
         print("")
         for j in range(len(map_list[i])):  # x行
             print(map_list[i][j], end="")
+        print("")
 
 
 def main():
@@ -112,8 +123,9 @@ def main():
     map_list = input_map(x, y)
     map_list = wallCreation(map_list)
     map_list = toStatusList(map_list)
-    get_distance_dijkstra(map_list)
+    cost_until_a_goal = get_distance_dijkstra(map_list)
     # map_show(map_list)
+    print("ゴールまでのコスト：" + str(cost_until_a_goal))
 
 
 if __name__ == "__main__":

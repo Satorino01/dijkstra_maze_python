@@ -14,5 +14,5 @@ s 1 g
 ## Requirement
 python3 がインストールされている必要があります。
 ## Usage
-「dijkstra_maze_python」のディレクトリ下で以下のコマンドを実行するだけです。
+「dijkstra_maze_python」のディレクトリ下で以下のコマンドを実行するだけです。  
 `$ python3 main.py`

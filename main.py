@@ -64,8 +64,8 @@ def search_up_down_left_right(map_list, y, x):
         is_set = True   # is_setsが一つでもTrueならis_setはTrue
     if(4 != is_goals.count(0)):
         cost_until_a_goal = sum(is_goals)
-        #print("ゴール")
-    map_list[y][x] = "◯"
+        print("ゴール")
+    map_list[y][x] = str(map_list[y][x])
     return map_list, is_set, cost_until_a_goal
 
 
@@ -110,21 +110,30 @@ def get_distance_dijkstra(map_list):
 
 def map_show(map_list):
     for i in range(len(map_list)):  # y列
-        print("")
+        print("")  # 改行
         for j in range(len(map_list[i])):  # x行
-            print(map_list[i][j], end="")
-        print("")
+            print(map_list[i][j], end=" ")
+    print("")  # 改行
 
 
 def main():
-    xy = input().split(" ")
-    x = int(xy[0])
-    y = int(xy[1])
+    print("ダイクストラ法で盤面のSTART地点からGOAL地点までのコストを出します。")
+    print("x軸（横軸）のマスの数を入力してください：", end="")
+    x = int(input())
+    print("y軸（縦軸）のマスの数を入力してください：", end="")
+    y = int(input())
+    print("マップを入力してください。入力例(x軸 3 , y軸 2)の場合：")
+    print("s 1 g")
+    print("0 0 0")
+    print("通れる道：0 ,通れない壁：1 ,START地点：s ,GOAL地点：g ,と表現します")
+    print("ｘ軸は上記のように空白を挟んで " + str(x) + " マス分の属性を入力してください,"
+          "それを " + str(y) + " 行分繰り返してください。")
+    print(" s と g を入力していいのは一回だけです：")
     map_list = input_map(x, y)
     map_list = wallCreation(map_list)
     map_list = toStatusList(map_list)
     cost_until_a_goal = get_distance_dijkstra(map_list)
-    # map_show(map_list)
+    map_show(map_list)
     print("ゴールまでのコスト：" + str(cost_until_a_goal))
 
 

@@ -117,18 +117,18 @@ def map_show(map_list):
 
 
 def main():
-    print("ダイクストラ法で盤面のSTART地点からGOAL地点までのコストを出します。")
-    print("x軸（横軸）のマスの数を入力してください：", end="")
+    print("タイルマップ上のSTART地点からGOAL地点までの最短経路コストを出力します。")
+    print("ｘ軸（横軸）のマスの数を入力してください：", end="")
     x = int(input())
-    print("y軸（縦軸）のマスの数を入力してください：", end="")
+    print("ｙ軸（縦軸）のマスの数を入力してください：", end="")
     y = int(input())
-    print("マップを入力してください。入力例(x軸 3 , y軸 2)の場合：")
+    print(str(x) + " × " + str(y) + " のマップ入力してください。\n"
+          "入力例(ｘ軸 3 , ｙ軸 2)の場合")
     print("s 1 g")
     print("0 0 0")
-    print("通れる道：0 ,通れない壁：1 ,START地点：s ,GOAL地点：g ,と表現します")
-    print("ｘ軸は上記のように空白を挟んで " + str(x) + " マス分の属性を入力してください,"
-          "それを " + str(y) + " 行分繰り返してください。")
-    print(" s と g を入力していいのは一回だけです：")
+    print("通れる道：0 ,通れない壁：1 ,START地点：s ,GOAL地点：g ,と表現します。")
+    print("※ｘ軸は上記のように空白を挟んでください")
+    print("※ｓとｇを入力していいのは 1 回だけです。")
     map_list = input_map(x, y)
     map_list = wallCreation(map_list)
     map_list = toStatusList(map_list)

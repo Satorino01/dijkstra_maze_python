@@ -49,7 +49,7 @@ def set_scores(map_list, y, x, now_cost):  # 通れる道かゴールならコ�
 
 
 def search_up_down_left_right(map_list, y, x):  # 上下右左の道にコストを入れるメソッド
-    print("up_down_left_right X:"+str(x)+" Y:"+str(y))
+    # print("up_down_left_right X:"+str(x)+" Y:"+str(y))
     now_cost = map_list[y][x]
     is_set = False
     is_sets = [False, False, False, False]
@@ -133,26 +133,58 @@ def directions_to_goal(map_list, goal_y, goal_x):
                                                                   goal_y])
     # print("directions_to_goal_list["+str(map_list[goal_y][goal_x])+"]")
     for i in reversed(range(int(map_list[goal_y][goal_x]))):
+        is_first_directions = True
+        directions_to_goal_list.update({i: []})
         for j in range(len(map_list)):  # y列
-            for k in range(len(map_list[i])):  # x行
-                if(map_list[j][k] == str(i)):
+            for k in range(len(map_list[j])):  # x行
+                if(map_list[j][k] == str(i) or map_list[j][k] == i):
                     # print("directions_to_goal_list["+str(i+1)+"]")
-                    if([k, j-1] in directions_to_goal_list[i+1] or  # 上
-                       [k, j+1] in directions_to_goal_list[i+1] or  # 下
-                       [k+1, j] in directions_to_goal_list[i+1] or  # 右
-                       [k-1, j] in directions_to_goal_list[i+1]):  # 左
-                        directions_to_goal_list.update({i: []})
+                    print(directions_to_goal_list[i+1])
+                    if([k, j-1] in directions_to_goal_list[i+1]):  # 上
                         directions_to_goal_list[i].append([k, j])
                         if("0" == map_list[j][k]):
                             map_list[j][k] = "s"
                         else:
-                            map_list[j][k] = "+"
+                            if(is_first_directions):
+                                map_list[j][k] = "↑"
+                                is_first_directions = False
+                            else:
+                                map_list[j][k] = "↑"
+                    elif([k, j+1] in directions_to_goal_list[i+1]):  # 下
+                        directions_to_goal_list[i].append([k, j])
+                        if("0" == map_list[j][k]):
+                            map_list[j][k] = "s"
+                        else:
+                            if(is_first_directions):
+                                map_list[j][k] = "↓"
+                                is_first_directions = False
+                            else:
+                                map_list[j][k] = "↓"
+                    elif([k+1, j] in directions_to_goal_list[i+1]):  # 右
+                        directions_to_goal_list[i].append([k, j])
+                        if("0" == map_list[j][k]):
+                            map_list[j][k] = "s"
+                        else:
+                            if(is_first_directions):
+                                map_list[j][k] = "→"
+                                is_first_directions = False
+                            else:
+                                map_list[j][k] = "→"
+                    elif([k-1, j] in directions_to_goal_list[i+1]):  # 左
+                        directions_to_goal_list[i].append([k, j])
+                        if("0" == map_list[j][k]):
+                            map_list[j][k] = "s"
+                        else:
+                            if(is_first_directions):
+                                map_list[j][k] = "←"
+                                is_first_directions = False
+                            else:
+                                map_list[j][k] = "←"
     map_list[goal_y][goal_x] = "g"
     return directions_to_goal_list
 
 
 def directions_show(directions_to_goal_list):
-    print("\nゴールまでの座標を表示します")
     for i in range(len(directions_to_goal_list)):
         for j in range(len(directions_to_goal_list[i])):
             print("コスト：" + str(i) + ", X：" +
@@ -180,12 +212,12 @@ def main():
     cost_until_a_goal, goal_y, goal_x = get_distance_dijkstra(map_list)
     print("\n探索完了")
     map_show(map_list)
-    print(cost_until_a_goal)
     if(cost_until_a_goal == "Fail"):
         print("\nゴールにたどり着くことはできませんでした")
     else:
         directions_to_goal_list = directions_to_goal(map_list,
                                                      goal_y, goal_x)
+        print("\nゴールまでの座標を表示します")
         directions_show(directions_to_goal_list)
         print("\nゴールまでの道順を表示します")
         map_show(map_list)

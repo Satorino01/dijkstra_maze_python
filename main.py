@@ -133,53 +133,21 @@ def directions_to_goal(map_list, goal_y, goal_x):
                                                                   goal_y])
     # print("directions_to_goal_list["+str(map_list[goal_y][goal_x])+"]")
     for i in reversed(range(int(map_list[goal_y][goal_x]))):
-        is_first_directions = True
         directions_to_goal_list.update({i: []})
         for j in range(len(map_list)):  # y列
             for k in range(len(map_list[j])):  # x行
                 if(map_list[j][k] == str(i) or map_list[j][k] == i):
                     # print("directions_to_goal_list["+str(i+1)+"]")
-                    print(directions_to_goal_list[i+1])
-                    if([k, j-1] in directions_to_goal_list[i+1]):  # 上
+                    # print(directions_to_goal_list[i+1])
+                    if([k, j-1] in directions_to_goal_list[i+1] or  # 上
+                       [k, j+1] in directions_to_goal_list[i+1] or  # 下
+                       [k+1, j] in directions_to_goal_list[i+1] or  # 右
+                       [k-1, j] in directions_to_goal_list[i+1]):  # 左
                         directions_to_goal_list[i].append([k, j])
                         if("0" == map_list[j][k]):
                             map_list[j][k] = "s"
                         else:
-                            if(is_first_directions):
-                                map_list[j][k] = "↑"
-                                is_first_directions = False
-                            else:
-                                map_list[j][k] = "↑"
-                    elif([k, j+1] in directions_to_goal_list[i+1]):  # 下
-                        directions_to_goal_list[i].append([k, j])
-                        if("0" == map_list[j][k]):
-                            map_list[j][k] = "s"
-                        else:
-                            if(is_first_directions):
-                                map_list[j][k] = "↓"
-                                is_first_directions = False
-                            else:
-                                map_list[j][k] = "↓"
-                    elif([k+1, j] in directions_to_goal_list[i+1]):  # 右
-                        directions_to_goal_list[i].append([k, j])
-                        if("0" == map_list[j][k]):
-                            map_list[j][k] = "s"
-                        else:
-                            if(is_first_directions):
-                                map_list[j][k] = "→"
-                                is_first_directions = False
-                            else:
-                                map_list[j][k] = "→"
-                    elif([k-1, j] in directions_to_goal_list[i+1]):  # 左
-                        directions_to_goal_list[i].append([k, j])
-                        if("0" == map_list[j][k]):
-                            map_list[j][k] = "s"
-                        else:
-                            if(is_first_directions):
-                                map_list[j][k] = "←"
-                                is_first_directions = False
-                            else:
-                                map_list[j][k] = "←"
+                            map_list[j][k] = "+"
     map_list[goal_y][goal_x] = "g"
     return directions_to_goal_list
 
@@ -193,7 +161,7 @@ def directions_show(directions_to_goal_list):
 
 
 def main():
-    print("タイルマップ上のSTART地点からGOAL地点までの最短経路コストを出力します。")
+    print("タイルマップ上のSTART地点からGOAL地点までの最短経路の座標、道順、距離を出力します。")
     print("ｘ軸（横軸）のマスの数を入力してください：", end="")
     x = int(input())
     print("ｙ軸（縦軸）のマスの数を入力してください：", end="")
@@ -203,7 +171,7 @@ def main():
     print("s 1 g")
     print("0 0 0")
     print("通れる道：0 ,通れない壁：1 ,START地点：s ,GOAL地点：g ,と表現します。")
-    print("※ｘ軸は上記のように空白を挟んでください")
+    print("※ｘ軸は上記のように空白を挟んでください。")
     print("※ｓとｇを入力していいのは 1 回だけです。")
     map_list = input_map(x, y)
     map_list = wallCreation(map_list)
@@ -219,9 +187,9 @@ def main():
                                                      goal_y, goal_x)
         print("\nゴールまでの座標を表示します")
         directions_show(directions_to_goal_list)
-        print("\nゴールまでの道順を表示します")
+        print("\nゴールまでの道順を「+」で表示します")
         map_show(map_list)
-        print("\nゴールまでのコスト：" + str(cost_until_a_goal))
+        print("\nゴールまでの距離は " + str(cost_until_a_goal) + " マス分です。")
 
 
 if __name__ == "__main__":

@@ -136,18 +136,35 @@ def directions_to_goal(map_list, goal_y, goal_x):
         directions_to_goal_list.update({i: []})
         for j in range(len(map_list)):  # y列
             for k in range(len(map_list[j])):  # x行
-                if(map_list[j][k] == str(i) or map_list[j][k] == i):
+                if(map_list[j][k] == "0"):
+                    map_list[j][k] = "s"
+                elif(map_list[j][k] == str(i) or map_list[j][k] == i):
                     # print("directions_to_goal_list["+str(i+1)+"]")
                     # print(directions_to_goal_list[i+1])
-                    if([k, j-1] in directions_to_goal_list[i+1] or  # 上
-                       [k, j+1] in directions_to_goal_list[i+1] or  # 下
-                       [k+1, j] in directions_to_goal_list[i+1] or  # 右
-                       [k-1, j] in directions_to_goal_list[i+1]):  # 左
+                    if([k, j-1] in directions_to_goal_list[i+1]):  # 上
                         directions_to_goal_list[i].append([k, j])
-                        if("0" == map_list[j][k]):
-                            map_list[j][k] = "s"
-                        else:
+                        if(map_list[j][k] in ["↑", "↓", "→", "←"]):
                             map_list[j][k] = "+"
+                        else:
+                            map_list[j][k] = "↑"
+                    if([k, j+1] in directions_to_goal_list[i+1]):  # 下
+                        directions_to_goal_list[i].append([k, j])
+                        if(map_list[j][k] in ["↑", "↓", "→", "←"]):
+                            map_list[j][k] = "+"
+                        else:
+                            map_list[j][k] = "↓"
+                    if([k+1, j] in directions_to_goal_list[i+1]):  # 右
+                        directions_to_goal_list[i].append([k, j])
+                        if(map_list[j][k] in ["↑", "↓", "→", "←"]):
+                            map_list[j][k] = "+"
+                        else:
+                            map_list[j][k] = "→"
+                    if([k-1, j] in directions_to_goal_list[i+1]):  # 左
+                        directions_to_goal_list[i].append([k, j])
+                        if(map_list[j][k] in ["↑", "↓", "→", "←"]):
+                            map_list[j][k] = "+"
+                        else:
+                            map_list[j][k] = "←"
     map_list[goal_y][goal_x] = "g"
     return directions_to_goal_list
 
@@ -187,7 +204,7 @@ def main():
                                                      goal_y, goal_x)
         print("\nゴールまでの座標を表示します")
         directions_show(directions_to_goal_list)
-        print("\nゴールまでの道順を「+」で表示します")
+        print("\nゴールまでの道順を矢印で表示します")
         map_show(map_list)
         print("\nゴールまでの距離は " + str(cost_until_a_goal) + " マス分です。")
 
